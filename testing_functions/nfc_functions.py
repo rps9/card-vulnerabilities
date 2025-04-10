@@ -2,9 +2,9 @@
 Import as nfc_functions into the file so we only have the one master script with all the NFC tag functionality.
 - Keep your code in the same folder so python can find this file.
 
-from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block
+from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block, read_blocks, read_all_blocks, print_dump_contents
 or just import the whole file:
-import nfc_utils
+import nfc_functions, then you have to calls as nfc_functions.dump_full_card()
 """
 
 import subprocess
@@ -27,13 +27,6 @@ def dump_full_card(filename="full_card_dump.mfd", preview=True):
         print(e.stderr.decode())
         return False
 
-    if preview and os.path.exists(filename):
-        print("\n[*] Preview of first 10 blocks (160 bytes):\n")
-        with open(filename, "rb") as f:
-            data = f.read(160)  # First 10 blocks (16 bytes per block)
-            for i in range(0, len(data), 16):
-                block = data[i:i+16]
-                print(f"Block {i//16:02}: {' '.join(f'{b:02x}' for b in block)}")
     return True
 
 def write_dump_to_card(filename="full_card_dump.mfd"):
@@ -62,7 +55,7 @@ def write_to_block(block_number, data, filename="full_card_dump.mfd"):
         return False
 
     # Pad data to 16 bytes
-    data = data.ljust(16, b'\x00')
+    data = pad_data(data, 16)
 
     print(f"[*] Writing to block {block_number} in {filename}...")
 
@@ -79,7 +72,11 @@ def write_to_block(block_number, data, filename="full_card_dump.mfd"):
         return False
     return True
 
+
 def read_block(block_number, filename="full_card_dump.mfd"):
+    """
+    Returns a 16 byte block of data
+    """
     # Dump the current card contents
     if not dump_full_card(filename):
         return None
@@ -91,3 +88,84 @@ def read_block(block_number, filename="full_card_dump.mfd"):
     except Exception as e:
         print("[!] Failed to read block:", str(e))
         return None
+
+
+def read_blocks(start_block, num_blocks, filename="full_card_dump.mfd"):
+    """
+    Returns a list of 16 byte blocks
+    """
+    if not dump_full_card(filename):
+        return None
+    blocks = []
+    try:
+        with open(filename, "rb") as f:
+            f.seek(start_block * 16)
+            for _ in range(num_blocks):
+                block = f.read(16)
+                if len(block) < 16:
+                    break
+                blocks.append(block)
+        return blocks
+    except Exception as e:
+        print("[!] Failed to read blocks:", str(e))
+        return None
+
+def read_all_blocks(filename="full_card_dump.mfd"):
+    if not dump_full_card(filename, preview=False):
+        return None
+    try:
+        with open(filename, "rb") as f:
+            data = f.read()
+        num_blocks = len(data) // 16
+        blocks = []
+        print("\n[*] Full card dump:")
+        for i in range(num_blocks):
+            block = data[i*16:(i+1)*16]
+            decoded = decode_block_data(block)
+            print(f"Block {i:02}: {' '.join(f'{b:02x}' for b in block)} | Decoded: {decoded}")
+            blocks.append(block)
+        return blocks
+    except Exception as e:
+        print("[!] Failed to read entire dump:", e)
+        return None
+
+
+def print_dump_contents(filename="full_card_dump.mfd"):
+    """
+    Prints all blocks in the file
+    returns a list of 16 byte blocks
+    """
+    if not dump_full_card(filename, preview=False):
+        return None
+    try:
+        with open(filename, "rb") as f:
+            data = f.read()
+        num_blocks = len(data) // 16
+        blocks = []
+        print("\n[*] Full card dump:")
+        for i in range(num_blocks):
+            block = data[i*16:(i+1)*16]
+            decoded = decode_block_data(block)
+            print(f"Block {i:02}: {' '.join(f'{b:02x}' for b in block)} | Decoded: {decoded}")
+            blocks.append(block)
+        return blocks
+    except Exception as e:
+        print("[!] Failed to read entire dump:", e)
+        return None
+
+
+# ===== Helper functions =====
+
+# just decodes block data by removing the null bytes
+def decode_block_data(data):
+    try:
+        return data.decode("utf-8").rstrip('\x00')
+    except UnicodeDecodeError:
+        return "BAD DATA"
+
+# pad data to 16 bytes or whatever u specify (probably going to be 16)
+# -- write_to_block already does this so only used if directly modifying a dumped file
+def pad_data(data, block_size=16):
+    if len(data) > block_size:
+        return data[:block_size] # trunc if too long
+    return data.ljust(block_size, b'\x00')
