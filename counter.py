@@ -13,7 +13,7 @@ def counter_check(filename="full_card_dump.mfd"):
     try:
         with open(filename, "rb") as f:
             f.seek(16)  # assume the first block is the uid
-            uid = f.read(16)
+            uid = f.read(4)
             card_uid=uid.hex()
             f.seek(32)  # assume the second block is the count
             count = f.read(16)
