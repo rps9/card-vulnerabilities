@@ -21,3 +21,4 @@ Vulnerabilities/issues:
     - adding all of this custom logic could be expensive in the real world, so at that point it might not even be worth using the
         mifare classic 
 '''
+
