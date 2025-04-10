@@ -53,9 +53,14 @@ def write_to_block(block_number, data, filename="full_card_dump.mfd"):
     if len(data) > 16:
         print("[!] Data too long. Must be 16 bytes or fewer.")
         return False
+    
+
+    # convert data to utf-8
+    data_utf = data.encode("utf-8")
+
 
     # Pad data to 16 bytes
-    data = pad_data(data, 16)
+    data = pad_data(data_utf, 16)
 
     print(f"[*] Writing to block {block_number} in {filename}...")
 
@@ -135,8 +140,8 @@ def print_dump_contents(filename="full_card_dump.mfd"):
     Prints all blocks in the file
     returns a list of 16 byte blocks
     """
-    if not dump_full_card(filename, preview=False):
-        return None
+    # if not dump_full_card(filename, preview=False):
+    #     return None
     try:
         with open(filename, "rb") as f:
             data = f.read()
@@ -161,7 +166,7 @@ def decode_block_data(data):
     try:
         return data.decode("utf-8").rstrip('\x00')
     except UnicodeDecodeError:
-        return "BAD DATA"
+        return "Not readable plaintext"
 
 # pad data to 16 bytes or whatever u specify (probably going to be 16)
 # -- write_to_block already does this so only used if directly modifying a dumped file
@@ -169,3 +174,17 @@ def pad_data(data, block_size=16):
     if len(data) > block_size:
         return data[:block_size] # trunc if too long
     return data.ljust(block_size, b'\x00')
+
+
+
+# test reading a card
+def main():
+    dump_full_card("full_card_dump.mfd")
+    # write_to_block(4, b"Hello World!")
+    # read_block(4)
+    # read_blocks(0, 5)
+    # read_all_blocks()
+    print_dump_contents()
+
+if __name__ == "__main__":
+    main()
