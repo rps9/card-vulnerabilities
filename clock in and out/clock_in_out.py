@@ -22,3 +22,39 @@ Vulnerabilities/issues:
         mifare classic 
 '''
 
+import pandas as pd
+import os
+import sys
+
+# Adding the above directory and current directory to the path so we can use both
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
+sys.path.insert(0, current_dir)
+sys.path.insert(1, parent_dir)
+
+from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block
+
+
+def add_employee(card_uid, name):
+    df = pd.read_csv("employee_database.csv")
+
+    # Check if card_uid already exists
+    if card_uid in df["card_uid"].values:
+        print(f"[!] Employee with UID {card_uid} already exists.")
+        return
+
+    # Add new employee row
+    new_entry = {
+        "card_uid": card_uid,
+        "name": name,
+        "status": "OUT",       # Default: not clocked in
+        "pto": False,          # Default: not on PTO
+        "sick": False,         # Default: not sick
+        "last_seen": ""        # No clock-in time yet
+    }
+
+    df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
+    df.to_csv("employee_database.csv", index=False)
+    print(f"[+] Added employee '{name}' with card UID {card_uid}.")
+
+add_employee(1234, "Ryan")

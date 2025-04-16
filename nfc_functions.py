@@ -11,7 +11,7 @@ import subprocess
 import os
 import time
 
-def dump_full_card(filename="full_card_dump.mfd", preview=True):
+def dump_full_card(filename="full_card_dump.mfd"):
     print("[*] Starting card dump using nfc-mfclassic...")
     
     try:
