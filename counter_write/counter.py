@@ -4,7 +4,7 @@ Each time a card is scanned to the system, the system will check if the counter 
 And it will add one to the counter in database and write the new counter to the card.
 If it finds out the both counter are different, it will sent an alarm message. 
 """
-from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block
+from nfc_func_copy import dump_full_card, write_dump_to_card, write_to_block, read_block
 
 import csv
 
@@ -60,3 +60,6 @@ def counter_check(filename="full_card_dump.mfd"):
     block_count = card_count.to_bytes(16, 'big')
     write_to_block(6, block_count)
     return None
+
+
+counter_check()
