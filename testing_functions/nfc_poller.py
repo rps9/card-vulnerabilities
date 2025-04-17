@@ -1,4 +1,4 @@
-from test_write import dump_full_card, read_block
+from nfc_functions import dump_full_card, read_block
 
 def continuous_poll(block=4, poll_interval=2, filename="full_card_dump.mfd"):
     try:
