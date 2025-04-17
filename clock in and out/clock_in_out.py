@@ -26,35 +26,57 @@ import pandas as pd
 import os
 import sys
 
-# Adding the above directory and current directory to the path so we can use both
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
-sys.path.insert(0, current_dir)
-sys.path.insert(1, parent_dir)
+# Adding the above directory to the path so we can use both
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block
 
+EMPLOYEE_DATABASE_PATH = r"clock in and out/employee_database.csv"
 
-def add_employee(card_uid, name):
-    df = pd.read_csv("employee_database.csv")
+def add_employee(card_uid: str, name: str) -> None:
+    '''
+    Takes card UID and adds it to the database. Note the uid must be scanned before calling this function, this function
+    does not obtain the UID
+
+    Parameters:
+    - card_uid: the UID of the given card
+    - name: the name of the employee this card is associated with
+
+    Returns:
+    - None
+    '''
+    # make dataframe
+    df = pd.read_csv(EMPLOYEE_DATABASE_PATH)
 
     # Check if card_uid already exists
     if card_uid in df["card_uid"].values:
         print(f"[!] Employee with UID {card_uid} already exists.")
         return
 
-    # Add new employee row
+    # Create employee data
     new_entry = {
         "card_uid": card_uid,
         "name": name,
-        "status": "OUT",       # Default: not clocked in
-        "pto": False,          # Default: not on PTO
-        "sick": False,         # Default: not sick
-        "last_seen": ""        # No clock-in time yet
+        "status": "OUT",
+        "pto": False,
+        "sick": False,
+        "last_seen": ""
     }
 
+    # Add new row to csv
     df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
-    df.to_csv("employee_database.csv", index=False)
+    df.to_csv(EMPLOYEE_DATABASE_PATH, index=False)
     print(f"[+] Added employee '{name}' with card UID {card_uid}.")
 
+def get_uid_and_add_employee() -> None:
+    '''
+    Obtains the UID then calls add_employee() to add it to the database
+
+    Parameters:
+    - None
+
+    Returns:
+    - None
+    '''
+    
 add_employee(1234, "Ryan")
