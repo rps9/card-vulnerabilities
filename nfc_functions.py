@@ -46,22 +46,22 @@ def write_dump_to_card(filename="full_card_dump.mfd"):
         return False
     
     
+# named poorly, but this is for bytes while write_block is strings
 def write_to_block(block_number, data, filename="full_card_dump.mfd"):
     # Dump the current card contents to a file
     if not dump_full_card(filename):
         return False
 
-    if not isinstance(data, str):
-        print("[!] Input data must be a string for write_to_block.")
-        return False
+    if not isinstance(data, bytes):
+        print("[!] Input data must be bytes for write_to_block.")
+        try: # try to convert to bytes
+            data = data.encode('utf-8')
+            print("[!] Warning: Input was string, automatically encoded to UTF-8 bytes.")
+        except (AttributeError, UnicodeEncodeError):
+             print("[!] Input data could not be converted to bytes.")
+             return False
         
-    if len(data) > 16:
-        print("[!] Data string too long. Must be 16 characters or fewer.")
-        return False
-
-    data_bytes = data.encode("utf-8") 
-
-    padded_data = pad_data(data_bytes, 16)
+    padded_data = pad_data(data, 16) # pad to 16 BYTES
 
     print(f"[*] Writing bytes {padded_data.hex()} to block {block_number} in {filename}...")
 
@@ -164,6 +164,9 @@ def decode_block_data(data):
 # pad data to 16 bytes or whatever u specify (probably going to be 16)
 # -- write_to_block already does this so only used if directly modifying a dumped file
 def pad_data(data, block_size=16):
+    if not isinstance(data, bytes): # must be bytes double check
+        print("[!] pad_data expects bytes input.")
+        return None
     if len(data) > block_size:
         return data[:block_size] # trunc if too long
     return data.ljust(block_size, b'\x00')

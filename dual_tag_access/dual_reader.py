@@ -31,7 +31,7 @@ def wait_for_tag(block, timeout, filename):
     return None
 
 def dual_tag_read():
-    print("present the SECONDARY tag")
+    input("present the SECONDARY tag (press enter when ready)")
     secondary_filename = "secondary_dump.mfd"
     secondary_block = 4
     key_data = wait_for_tag(secondary_block, timeout=30, filename=secondary_filename)
@@ -50,7 +50,7 @@ def dual_tag_read():
     print("Secondary tag detected. Key (hex):", key.hex())
 
     # Now, wait for the primary tag within 30 seconds
-    print("\nPlease present the PRIMARY tag (holds encrypted data) within 30 seconds.")
+    input("\nPlease present the PRIMARY tag (holds encrypted data) -- (press enter when ready)")
     primary_filename = "primary_dump.mfd"
     primary_block = 4
     ciphertext = wait_for_tag(primary_block, timeout=30, filename=primary_filename)

@@ -4,12 +4,14 @@ import time
 
 from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block
 
+block_to_write = 4
+
 def main():
-    user_text = input("Enter text to write to block 4 (max 16 characters): ")
+    user_text = input("Enter text to write to block "+str(block_to_write)+" (max 16 characters): ")
     text_bytes = user_text.encode("utf-8")
-    
+    text_bytes = user_text
     print("\n--- Writing to Tag ---")
-    if not write_to_block(4, text_bytes):
+    if not write_to_block(block_to_write, text_bytes):
         print("[!] Write operation failed. Exiting.")
         return
 
@@ -17,9 +19,9 @@ def main():
     time.sleep(5)
 
     print("\n--- Reading from Tag ---")
-    block_data = read_block(4)
+    block_data = read_block(block_to_write)
     if block_data is not None:
-        print("[+] Read block 4 data:")
+        print("[+] Read block "+str(block_to_write)+"  data:")
         print("Hex:", " ".join(f"{b:02x}" for b in block_data))
         try:
             # Decode and strip padding (null bytes)
