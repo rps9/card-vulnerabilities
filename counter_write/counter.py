@@ -1,9 +1,10 @@
 import csv
+import argparse
 from nfc_functions import dump_full_card, read_block, write_block
 
 LETTER_CYCLE = ["a", "b", "c", "d"]
 DUMP_FILE = "full_card_dump.mfd"
-DB_FILE = "data.csv"
+DB_FILE = "counter_write/data.csv"
 COUNTER_BLOCK = 4
 
 def load_db(path):
@@ -20,6 +21,25 @@ def save_db(path, data):
     with open(path, "w", newline="") as f:
         csv.writer(f).writerows(data.items())
 
+
+def init_card():
+    print("Polling for card to initialize...")
+    if not dump_full_card(DUMP_FILE):
+        print("Failed to read card for initialization.")
+        return
+
+    uid_blk = read_block(0, DUMP_FILE)
+    if not uid_blk:
+        print("Failed to read UID block.")
+        return
+
+    uid = uid_blk[:4].hex()
+    print(f"Initializing card UID: {uid}")
+
+    # Writes an a to the counter spot to setup the card
+    if not write_block(COUNTER_BLOCK, 'a', DUMP_FILE):
+        print("Write to card failed.")
+        return
 
 def counter_check():
     while True:
@@ -75,4 +95,14 @@ def counter_check():
         input("Press enter to poll again...")
 
 if __name__ == "__main__":
-    counter_check()
+    parser = argparse.ArgumentParser(description="Card counter utility.")
+    parser.add_argument(
+        '--init', action='store_true',
+        help="Initialize a card by writing 'a' to the counter block"
+    )
+    args = parser.parse_args()
+
+    if args.init:
+        init_card()
+    else:
+        counter_check()

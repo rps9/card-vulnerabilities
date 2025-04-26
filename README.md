@@ -4,6 +4,10 @@ In this repository we study the vulnerabilities of physical cards and offer some
 # Usage 
 use [nfc-mfclassic](https://www.mankier.com/1/nfc-mfclassic) from libnfc
 
+Use the main `nfc_functions.py` to run all the tests. Replace the counter_write/counter.py with whatever function you are trying to run. This way subfolders can access the main nfc functions file.
+```sh
+PYTHONPATH=. python3 counter_write/counter.py
+```
 
 # References
 paper:
