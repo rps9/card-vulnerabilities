@@ -11,8 +11,8 @@ import subprocess
 import os
 import time
 
-def dump_full_card(filename="full_card_dump.mfd"):
-    print("[*] Starting card dump using nfc-mfclassic...")
+def dump_full_card(filename="full_card_dump.mfd", preview=True):
+    # print("[*] Starting card dump using nfc-mfclassic...")
     
     try:
         result = subprocess.run(
@@ -21,7 +21,7 @@ def dump_full_card(filename="full_card_dump.mfd"):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        print("[+] Dump successful. File saved as:", filename)
+        # print("[+] Dump successful. File saved as:", filename)
     except subprocess.CalledProcessError as e:
         print("[!] Failed to dump card.")
         print(e.stderr.decode())
@@ -30,7 +30,7 @@ def dump_full_card(filename="full_card_dump.mfd"):
     return True
 
 def write_dump_to_card(filename="full_card_dump.mfd"):
-    print("[*] Writing modified dump back to card...")
+    # print("[*] Writing modified dump back to card...")
     try:
         subprocess.run(
             ["nfc-mfclassic", "w", "a", "u", filename],
@@ -44,44 +44,44 @@ def write_dump_to_card(filename="full_card_dump.mfd"):
         print("[!] Failed to write card.")
         print(e.stderr.decode())
         return False
-
+    
+    
 def write_to_block(block_number, data, filename="full_card_dump.mfd"):
     # Dump the current card contents to a file
     if not dump_full_card(filename):
         return False
 
-    if len(data) > 16:
-        print("[!] Data too long. Must be 16 bytes or fewer.")
+    if not isinstance(data, str):
+        print("[!] Input data must be a string for write_to_block.")
         return False
-    
+        
+    if len(data) > 16:
+        print("[!] Data string too long. Must be 16 characters or fewer.")
+        return False
 
-    # convert data to utf-8
-    data_utf = data.encode("utf-8")
+    data_bytes = data.encode("utf-8") 
 
+    padded_data = pad_data(data_bytes, 16)
 
-    # Pad data to 16 bytes
-    data = pad_data(data_utf, 16)
-
-    print(f"[*] Writing to block {block_number} in {filename}...")
+    print(f"[*] Writing bytes {padded_data.hex()} to block {block_number} in {filename}...")
 
     try:
         with open(filename, "r+b") as f:
             f.seek(block_number * 16)
-            f.write(data)
-        print("[+] Block modified successfully.")
+            f.write(padded_data) # Write the padded bytes
+        print("[+] Block modified in dump file successfully.")
     except Exception as e:
-        print("[!] Failed to write to file:", str(e))
+        print("[!] Failed to write to dump file:", str(e))
         return False
 
+    # Now write the modified dump file to the card
     if not write_dump_to_card(filename):
         return False
+        
     return True
 
 
 def read_block(block_number, filename="full_card_dump.mfd"):
-    """
-    Returns a 16 byte block of data
-    """
     # Dump the current card contents
     if not dump_full_card(filename):
         return None
@@ -96,9 +96,6 @@ def read_block(block_number, filename="full_card_dump.mfd"):
 
 
 def read_blocks(start_block, num_blocks, filename="full_card_dump.mfd"):
-    """
-    Returns a list of 16 byte blocks
-    """
     if not dump_full_card(filename):
         return None
     blocks = []
@@ -136,10 +133,6 @@ def read_all_blocks(filename="full_card_dump.mfd"):
 
 
 def print_dump_contents(filename="full_card_dump.mfd"):
-    """
-    Prints all blocks in the file
-    returns a list of 16 byte blocks
-    """
     # if not dump_full_card(filename, preview=False):
     #     return None
     try:
@@ -176,15 +169,46 @@ def pad_data(data, block_size=16):
     return data.ljust(block_size, b'\x00')
 
 
+def write_block(block_number: int, text: str, filename: str = "full_card_dump.mfd") -> bool:
+    # dump entire card to file
+    if not dump_full_card(filename):
+        print("Failed to dump card.")
+        return False
 
-# test reading a card
-def main():
-    dump_full_card("full_card_dump.mfd")
-    # write_to_block(4, b"Hello World!")
-    # read_block(4)
-    # read_blocks(0, 5)
-    # read_all_blocks()
-    print_dump_contents()
+    # prep payload
+    data = text.encode("utf-8")[:16] 
+    data = data.ljust(16, b'\x00')
 
-if __name__ == "__main__":
-    main()
+    offset = block_number * 16
+    try:
+        with open(filename, "r+b") as f:
+            f.seek(offset)
+            f.write(data)
+        # print(f"Patched block {block_number} in dump file: {data.hex()}")
+    except Exception as e:
+        # print("Failed to patch dump file:", e)
+        return False
+
+    # 4) Write the full dump back to the card
+    if not write_dump_to_card(filename):
+        # print("rite_dump_to_card failed")
+        return False
+
+    # print(f"successfully wrote to block {block_number} on card.")
+    return True
+
+# if __name__ == "__main__":
+#     blk = 4
+#     txt = input(f"Enter up to 16 chars for block {blk}: ")
+#     if not patch_single_block(blk, txt):
+#         print("Block write failed — check the logs above.")
+#     else:
+#         print("Block write *attempted*; now re‑dump & read to confirm.")\
+        
+#     time.sleep(5)
+
+#     # test reading a card
+#     dump_full_card("full_card_dump2.mfd")
+#     print_dump_contents("full_card_dump2.mfd")
+
+
