@@ -1,65 +1,78 @@
-""" 
-This function will use a counter to prevent cloneing the card. 
-Each time a card is scanned to the system, the system will check if the counter in database macthes the one in card
-And it will add one to the counter in database and write the new counter to the card.
-If it finds out the both counter are different, it will sent an alarm message. 
-"""
-from nfc_func_copy import dump_full_card, write_dump_to_card, write_to_block, read_block
-
 import csv
+from nfc_functions import dump_full_card, read_block, write_block
 
-def counter_check(filename="full_card_dump.mfd"):
-    ## read from card
-    if not dump_full_card(filename):
-        return None
-    try:
-        with open(filename, "rb") as f:
-            f.seek(16)  # assume the  block 0 is the uid
-            uid = f.read(4)
-            card_uid = uid.hex()
-            f.seek(16*6)  # assume the block 5 is the count
-            count = f.read(16)
-            card_count = int.from_bytes(count, 'big')
-    except Exception as e:
-        print("[!] Failed to read block:", str(e))
-        return None
+LETTER_CYCLE = ["a", "b", "c", "d"]
+DUMP_FILE = "full_card_dump.mfd"
+DB_FILE = "data.csv"
+COUNTER_BLOCK = 4
 
-    ## read from CSV database
-    database = "data.csv"
+def load_db(path):
     data = {}
     try:
-        with open(database, mode='r', newline='') as csvfile:
-            reader = csv.reader(csvfile)
-            for row in reader:
-                if len(row) == 2:
-                    id_str, number = row
-                    data[id_str] = int(number)
+        with open(path, newline="") as f:
+            for uid, letter in csv.reader(f):
+                data[uid] = letter
     except FileNotFoundError:
-        print("[!] Database file not found.")
-        return None
+        pass
+    return data
 
-    ## compare
-    if card_uid not in data:
-        print("Access denied! No such card")
-        return None
-    if card_count != data[card_uid]:
-        print("Card getting cloned!")
-        return None
-    else:
-        print("Access granted successfully")
-
-    ## add one and record it both in card and database
-    data[card_uid] += 1
-
-    with open(database, mode='w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        for id_str, number in data.items():
-            writer.writerow([id_str, number])
-
-    card_count += 1
-    block_count = card_count.to_bytes(16, 'big')
-    write_to_block(6, block_count)
-    return None
+def save_db(path, data):
+    with open(path, "w", newline="") as f:
+        csv.writer(f).writerows(data.items())
 
 
-counter_check()
+def counter_check():
+    while True:
+        print("Polling for card...")
+        ## read from card
+        if not dump_full_card(DUMP_FILE):
+            return
+        uid_blk = read_block(0, DUMP_FILE)
+        letter_blk= read_block(COUNTER_BLOCK, DUMP_FILE)
+        if not uid_blk or not letter_blk:
+            print("Failed to read card")
+            return
+
+        uid = uid_blk[:4].hex()
+        card_letter = letter_blk[:1].decode("utf-8", errors="ignore") or ""
+        print(f"Card UID:    {uid}")
+        print(f"Card Letter: '{card_letter}'")
+
+        ## read from CSV database
+        db = load_db(DB_FILE)
+
+        ## compare
+        if uid not in db:
+            print("Access denied! No such card")
+            return
+
+        expected = db[uid]
+        if card_letter != expected:
+            print(f"⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='{expected}' vs Card='{card_letter}'")
+            print("police are on their way!")
+            return
+        print("✨ Access granted ✨ --  Welcome {uid}!".format(uid=uid))
+
+        ## add one and record it both in card and database
+        idx = LETTER_CYCLE.index(expected)
+        next_letter = LETTER_CYCLE[(idx + 1) % len(LETTER_CYCLE)]
+        db[uid] = next_letter
+        save_db(DB_FILE, db)
+
+        # write to card
+        # print(f"[*] Writing '{next_letter}' to block {COUNTER_BLOCK}…")
+        if not write_block(COUNTER_BLOCK, next_letter, DUMP_FILE):
+            print("Write failed.")
+            return
+
+        # # confirm
+        # time.sleep(0.5)
+        # dump_full_card(DUMP_FILE)
+        # confirm_blk = read_block(COUNTER_BLOCK, DUMP_FILE)
+        # confirmed   = confirm_blk[:1].decode("utf-8", errors="ignore") or ""
+        # print(f"[CONFIRM] Block {COUNTER_BLOCK} now reads: '{confirmed}'")
+
+        input("Press enter to poll again...")
+
+if __name__ == "__main__":
+    counter_check()
