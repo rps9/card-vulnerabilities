@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from nfc_functions import dump_full_card, write_dump_to_card, write_to_block, read_block
 
-EMPLOYEE_DATABASE_PATH = r"clock in and out/employee_database.csv"
+EMPLOYEE_DATABASE_PATH = r"clock_in_and_out/employee_database.csv"
 
 def add_employee(card_uid: str, name: str) -> None:
     '''
