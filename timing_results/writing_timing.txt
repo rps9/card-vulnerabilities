@@ -1,0 +1,72 @@
+❯ time ( for i in {1..10}; do echo test | PYTHONPATH=. python3 testing_functions/test_write.py ; done) 
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Enter text to write to block 4 (max 16 characters): 
+--- Writing to Tag ---
+[!] Input data must be bytes for write_to_block.
+[!] Warning: Input was string, automatically encoded to UTF-8 bytes.
+[*] Writing bytes 74657374000000000000000000000000 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+( for i in {1..10}; do; echo test | PYTHONPATH=. python3 ; done; )  0.54s user 0.36s system 5% cpu 17.557 total

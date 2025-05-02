@@ -1,0 +1,16 @@
+❯ time PYTHONPATH=. python3 dual_tag_access/dual_writer.py 
+=== Dual-Tag Writer ===
+Enter data (max 16 characters): testread
+
+Place the PRIMARY tag on the writer and press Enter to write
+[*] Writing bytes 0edbcef467fb5315caf6343791746e87 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Primary tag written successfully.
+
+Place the SECONDARY tag on the writer and press Enter to write
+[*] Writing bytes 086b4cbaed93d2b46b9b73d350aeedc0 to block 4 in full_card_dump.mfd...
+[+] Block modified in dump file successfully.
+[+] Card written successfully.
+Secondary tag written successfully.
+PYTHONPATH=. python3 dual_tag_access/dual_writer.py  0.12s user 0.07s system 1% cpu 12.282 total

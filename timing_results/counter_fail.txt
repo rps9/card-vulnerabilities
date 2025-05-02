@@ -1,0 +1,52 @@
+time ( for i in {1..10}; do PYTHONPATH=. python3 counter_write/counter.py; done )
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'p'
+⚠️⚠️⚠️⚠️⚠️ Clone detected! Database='c' vs Card='p'
+police are on their way!
+( for i in {1..10}; do; PYTHONPATH=. python3 counter_write/counter.py; done; )  0.76s user 0.54s system 3% cpu 33.661 total

@@ -1,0 +1,8 @@
+❯ time PYTHONPATH=. python3 dual_tag_access/dual_reader.py 
+present the SECONDARY tag (press enter when ready)
+Secondary tag detected. Key (hex): 086b4cbaed93d2b46b9b73d350aeedc0
+
+Please present the PRIMARY tag (holds encrypted data) -- (press enter when ready)
+
+Decrypted Primary Tag Data: testread
+PYTHONPATH=. python3 dual_tag_access/dual_reader.py  0.11s user 0.08s system 2% cpu 6.676 total

@@ -1,0 +1,6 @@
+Note that the source codes were modified for these tests 
+in order to remove any sleeps or any while Loops that you may see
+in the committed code in the project repo.
+
+Also note that the results for dual_read/dual_write are the floor results
+(as fast as I could do it -- any user's result would be slower than my best time 6.6s)

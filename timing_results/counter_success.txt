@@ -1,0 +1,52 @@
+❯ time ( for i in {1..10};do  PYTHONPATH=. python3 counter_write/counter.py ; done;)  
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'd'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'a'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'b'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'c'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'd'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'a'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'b'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'c'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'd'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+Polling for card...
+Card UID:    a0e96695
+Card Letter: 'a'
+✨ Access granted ✨ --  Welcome a0e96695!
+[+] Card written successfully.
+( for i in {1..10}; do; PYTHONPATH=. python3 counter_write/counter.py; done; )  1.03s user 0.75s system 3% cpu 50.751 total
