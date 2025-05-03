@@ -46,6 +46,8 @@ Reader:
 - demand both tags to be present to decrypt data
 - no encrypted data is stored server side as encryption key is on the second tag
 
+![image](https://github.com/user-attachments/assets/e47be977-4fe2-4d30-a4aa-c44c8193f6bc)
+
 
 # Usage 
 
